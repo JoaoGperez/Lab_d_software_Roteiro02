@@ -49,14 +49,14 @@ public class Task {
         this.completed = completed;
     }
 
-    // Enumeração para representar os tipos de tarefa
-    public enum TaskType {
+
+    public enum TaskType {  // Enumeração para representar os tipos de tarefa
         DATA,   // Tarefa com data prevista de conclusão
         PRAZO,  // Tarefa com prazo previsto de conclusão em dias
         LIVRE   // Tarefa sem data ou prazo previsto de conclusão
     }
 
-    public enum TaskPriority {
+    public enum TaskPriority {  // Enumeração para representar a prioridade de tarefa
         ALTA,
         MEDIA,
         BAIXA

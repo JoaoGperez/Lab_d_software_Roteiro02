@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -29,4 +31,28 @@ public class TaskService {
         taskDto.setPriority(taskDto.getPriority());
         return taskRepository.save(task);
     }
+
+    public void deleteTask(long id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+        taskRepository.deleteById(id);
+    }
+
+    public Task atualizarTask(long id, TaskDto taskDto) {
+        Task existingTask = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+
+        //Atualiza os campos da tarefa com os dados do DTO
+        existingTask.setDescription(taskDto.getDesctiption());
+        existingTask.setType(taskDto.getType());
+        existingTask.setPriority(taskDto.getPriority());
+
+        return taskRepository.save(existingTask);
+    }
+
+    public Task concluidaTask (long id){
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+        task.setCompleted(true);
+        return  taskRepository.save(task);
+    }
+
+
 }
