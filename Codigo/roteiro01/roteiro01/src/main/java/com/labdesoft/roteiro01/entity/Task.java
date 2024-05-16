@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -23,8 +25,10 @@ public class Task {
     private Boolean completed;
     private TaskType type; // Novo campo para indicar o tipo de tarefa
     private TaskPriority priority;
+    private LocalDate dueDate;
+    private Integer daysToComplete;
 
-    // Construtores, Getters e Setters...
+
     // Construtor
     public Task(long id, String description, boolean completed) {
         this.id = id;
@@ -32,14 +36,6 @@ public class Task {
         this.completed = completed;
     }
 
-    // Getters e Setters
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public boolean isCompleted() {
         return completed;

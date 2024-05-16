@@ -1,5 +1,6 @@
 package com.labdesoft.roteiro01.controller;
 
+import com.labdesoft.roteiro01.dto.TaskDto;
 import com.labdesoft.roteiro01.entity.Task;
 import com.labdesoft.roteiro01.repository.TaskRepository;
 import com.labdesoft.roteiro01.service.TaskService;
@@ -42,10 +43,10 @@ public class TaskController {
 
     @PostMapping("/task")
     @Operation(summary = "Adiciona uma nova tarefa à lista")
-    public ResponseEntity<Task> addTask(@RequestBody Task task) {
+    public ResponseEntity<Task> addTask(@RequestBody TaskDto taskDto) {
         try {
-            Task _task = taskRepository.save(task);
-            return new ResponseEntity<>(_task, HttpStatus.CREATED);
+            Task newTask = taskService.createTask(taskDto);
+            return new ResponseEntity<>(newTask, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

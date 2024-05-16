@@ -25,10 +25,23 @@ public class TaskService {
     public Task createTask(TaskDto taskDto) {
         Task task = new Task();
         taskDto.setId(taskDto.getId());
-        taskDto.setDesctiption(taskDto.getDesctiption());
+        taskDto.setDescription(taskDto.getDescription());
         taskDto.setCompleted(false);
         taskDto.setType(taskDto.getType());
         taskDto.setPriority(taskDto.getPriority());
+
+        switch (taskDto.getType()) {
+            case DATA:
+                task.setDueDate(taskDto.getDueDate());
+                break;
+            case PRAZO:
+                task.setDaysToComplete(taskDto.getDaysToComplete());
+                break;
+            case LIVRE:
+                task.setDueDate(null);
+                task.setDaysToComplete(null);
+        }
+
         return taskRepository.save(task);
     }
 
@@ -41,17 +54,17 @@ public class TaskService {
         Task existingTask = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
 
         //Atualiza os campos da tarefa com os dados do DTO
-        existingTask.setDescription(taskDto.getDesctiption());
+        existingTask.setDescription(taskDto.getDescription());
         existingTask.setType(taskDto.getType());
         existingTask.setPriority(taskDto.getPriority());
 
         return taskRepository.save(existingTask);
     }
 
-    public Task concluidaTask (long id){
+    public Task concluidaTask(long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
         task.setCompleted(true);
-        return  taskRepository.save(task);
+        return taskRepository.save(task);
     }
 
 
