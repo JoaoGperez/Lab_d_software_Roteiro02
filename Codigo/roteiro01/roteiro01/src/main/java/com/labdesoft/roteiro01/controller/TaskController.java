@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping
@@ -56,7 +57,7 @@ public class TaskController {
     @Operation(summary = "Deleta uma tarefa da lista pelo ID")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable Long taskId) {
         try {
-            taskRepository.deleteById(taskId);
+            taskService.deleteTask(taskId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,19 +66,14 @@ public class TaskController {
 
     @PutMapping("/task/{taskId}")
     @Operation(summary = "Atualiza uma tarefa da lista pelo ID")
-    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
-        try {
-            Task task = taskRepository.findById(taskId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada com o ID: " + taskId));
-
-            task.setDescription(taskDetails.getDescription());
-            task.setCompleted(taskDetails.isCompleted());
-            // Adicione outras atualizações conforme necessário
-
-            Task updatedTask = taskRepository.save(task);
-            return ResponseEntity.ok(updatedTask);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao atualizar a tarefa", e);
+    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto){
+        try{
+            Task updateTask = taskService.atualizarTask(taskId, taskDto);
+            return ResponseEntity.ok(updateTask);
+        }catch (NoSuchElementException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,11 +81,11 @@ public class TaskController {
     @Operation(summary = "Marca uma tarefa como concluída")
     public ResponseEntity<Task> completeTask(@PathVariable Long taskId) {
         try {
-            Task task = taskRepository.findById(taskId)
+            Task completedTask = taskRepository.findById(taskId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada com o ID: " + taskId));
 
-            task.setCompleted(true); // Marcando a tarefa como concluída
-            Task updatedTask = taskRepository.save(task);
+            completedTask.setCompleted(true); // Marcando a tarefa como concluída
+            Task updatedTask = taskRepository.save(completedTask);
             return ResponseEntity.ok(updatedTask);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao marcar a tarefa como concluída", e);
