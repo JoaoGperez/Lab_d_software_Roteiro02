@@ -26,22 +26,15 @@ public class Task {
     private TaskType type; // Novo campo para indicar o tipo de tarefa
     private TaskPriority priority;
     private LocalDate dueDate;
+    private LocalDate createdDate;
     private Integer daysToComplete;
+    private String status;
 
 
-    // Construtor
+    // Constructor
     public Task(long id, String description, boolean completed) {
         this.id = id;
         this.description = description;
-        this.completed = completed;
-    }
-
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 

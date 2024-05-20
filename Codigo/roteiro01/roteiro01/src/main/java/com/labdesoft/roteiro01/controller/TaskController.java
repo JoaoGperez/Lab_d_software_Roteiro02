@@ -5,7 +5,9 @@ import com.labdesoft.roteiro01.entity.Task;
 import com.labdesoft.roteiro01.repository.TaskRepository;
 import com.labdesoft.roteiro01.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,20 +25,20 @@ public class TaskController {
     private final TaskService taskService;
     @Autowired
     TaskRepository taskRepository;
-    public TaskController(TaskService taskService){
+
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping("/task")
-    @Operation(summary = "Lista todas as tarefas da lista")
-    public ResponseEntity<List<Task>> listAll() {
+    @Operation(summary = "Lista todas as tarefas da lists")
+    public ResponseEntity<Page<Task>> listAll(Pageable pageable) {
         try {
-            List<Task> taskList = new ArrayList<Task>();
-            taskRepository.findAll().forEach(taskList::add);
-            if (taskList.isEmpty()) {
+            Page<Task> tasksPage = taskService.listAll(pageable);
+            if (tasksPage.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(taskList, HttpStatus.OK);
+            return new ResponseEntity<>(tasksPage, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -66,13 +68,13 @@ public class TaskController {
 
     @PutMapping("/task/{taskId}")
     @Operation(summary = "Atualiza uma tarefa da lista pelo ID")
-    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto){
-        try{
+    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto) {
+        try {
             Task updateTask = taskService.atualizarTask(taskId, taskDto);
             return ResponseEntity.ok(updateTask);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,6 +91,27 @@ public class TaskController {
             return ResponseEntity.ok(updatedTask);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao marcar a tarefa como concluída", e);
+        }
+    }
+
+    @GetMapping
+    @Operation(summary = "Recuperar tarefa pelo ID")
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long taskId) {
+        try {
+            Task task = taskService.getTaskById(taskId);
+            TaskDto taskDto = new TaskDto();
+            taskDto.setDescription(task.getDescription());
+            taskDto.setCompleted(task.getCompleted());
+            taskDto.setType(task.getType());
+            taskDto.setPriority(task.getPriority());
+            taskDto.setDueDate(task.getDueDate());
+            taskDto.setDaysToComplete(task.getDaysToComplete());
+            taskDto.setStatus(task.getStatus());
+            return ResponseEntity.ok(taskDto);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

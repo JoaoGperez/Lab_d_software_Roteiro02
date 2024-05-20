@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class TaskService {
@@ -67,5 +69,41 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public Task getTaskById(Long id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+        task.setStatus(calculateStatus(task));
+        return task;
+    }
+
+    public String calculateStatus(Task task) {
+        if (task.getCompleted()) {
+            return "Tarefa concluida";
+        }
+
+        LocalDate today = LocalDate.now();
+
+        switch (task.getType()) {
+            case DATA:
+                if (task.getDueDate() != null) {
+                    if (task.getDueDate().isBefore(today)) {
+                        long daysLate = ChronoUnit.DAYS.between(task.getDueDate(), today);
+                        return daysLate + " Dias de atraso";
+                    } else return "Prevista";
+                }
+                break;
+            case PRAZO:
+                if (task.getDaysToComplete() != null) {
+                    LocalDate dueDate = task.getCreatedDate().plusDays(task.getDaysToComplete());
+                    if (dueDate.isBefore(today)) {
+                        long daysLate = ChronoUnit.DAYS.between(dueDate, today);
+                        return daysLate + " Dias de atraso";
+                    } else return "Prevista";
+                }
+                break;
+            case LIVRE:
+                return "Prevista";
+        }
+        return "Status desconhecido";
+    }
 
 }

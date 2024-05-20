@@ -19,4 +19,5 @@ public class TaskDto {
     private Task.TaskPriority priority;
     private LocalDate dueDate;
     private Integer daysToComplete;
+    private String status;
 }
