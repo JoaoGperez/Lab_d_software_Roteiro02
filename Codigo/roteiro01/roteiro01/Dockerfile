@@ -11,8 +11,6 @@ RUN mvn install
 
 FROM openjdk:21-jdk-slim
 
-WORKDIR /app
-
 EXPOSE 8080
 
 COPY --from=build target/roteiro01-0.0.1-SNAPSHOT.jar app.jar
