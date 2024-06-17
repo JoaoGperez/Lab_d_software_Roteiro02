@@ -1,6 +1,7 @@
 import React from 'react';
 import { TodoForm } from './TodoForm';
 import { TodoList } from './TodoList';
+import './TodoWrapper.css';
 export const TodoWrapper = () => {
     return (
         <div className='TodoWrapper'>
@@ -8,5 +9,6 @@ export const TodoWrapper = () => {
             <TodoForm />
             <TodoList />
         </div>
+        
     );
 }
