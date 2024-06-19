@@ -9,8 +9,32 @@ export const TodoWrapper = () => {
     const [todos, setTodos] = useState([
         { id: 1, description: 'Tarefa exemplo', completed: false }
     ]);
-    
 
+    const addTodo = (description) => {
+        setTodos([
+            ...todos,
+            { id: uuidv4(), task: description, completed: false },
+        ]);
+    }
+
+    const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
+
+    const toggleComplete = id => {
+        const newTodos = todos.map(todo => todo.id === id ? {
+            ...todo, completed:
+                !todo.completed
+        } : todo);
+        setTodos(newTodos);
+        localStorage.setItem('todos', JSON.stringify(newTodos));
+    }
+
+    const editTodo = (id) => {
+        setTodos(
+            todos.map((todo) =>
+                todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
+            )
+        );
+    }
 
     return (
         <div className='TodoWrapper'>
@@ -20,6 +44,10 @@ export const TodoWrapper = () => {
                 <TodoList
                     key={item.id}
                     task={item}
+                    deleteTodo={deleteTodo}
+                    editTodo={editTodo}
+                    toggleComplete={toggleComplete}
+
                 />
             )
             }
