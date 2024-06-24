@@ -7,16 +7,15 @@ import './TodoWrapper.css';
 export const TodoWrapper = () => {
 
     const [todos, setTodos] = useState([
-        { id: 1, description: 'Tarefa exemplo', completed: false }
+        { id: 1, description: 'Tarefa exemplo', completed: false, dueDate: '2024-07-01', priority: 'Medium' }
     ]);
 
-    const addTodo = (description) => {
+    const addTodo = (description, dueDate, priority) => {
         setTodos([
             ...todos,
-            { id: uuidv4(), description, completed: false },
+            { id: uuidv4(), description, completed: false, dueDate: dueDate, priority: priority },
         ]);
     }
-    
 
     const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
 

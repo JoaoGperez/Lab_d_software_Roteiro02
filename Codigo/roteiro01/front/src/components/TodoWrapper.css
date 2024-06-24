@@ -8,7 +8,6 @@
 
 body {
     background-color: rgb(6, 0, 90);
-    /* Make it white if you need */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,42 +20,61 @@ body {
 
 h1 {
     color: #fff;
-    margin-bottom: 0.5rem;
-    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
 }
 
 .TodoWrapper {
     margin-top: 5rem;
     padding: 2rem;
     border-radius: 5px;
+    width: 800px;
 }
 
 .TodoForm {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    flex-direction: column;
 }
 
-.todo-input {
+
+.todo-input,
+.todo-select,
+.todo-date {
     outline: none;
     background: none;
     border: 1px solid #8758ff;
     padding: 0.5rem 1rem;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-    width: 300px;
+    margin-bottom: 1rem;
     color: #fff;
+    width: 100%;
 }
 
-.todo-input::placeholder {
+.todo-input::placeholder
+.todo-select option {
     color: #ffffff4d;
+}
+
+.form-group {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
 }
 
 .todo-btn {
     background: #8758ff;
     color: #fff;
     border: none;
+    border-radius: 10px;
     padding: 0.55rem;
     cursor: pointer;
+    width: 30%;
+    font-size: medium;
+}
+
+.todo-select option {
+    background: #282c34;
+    color: #fff;
 }
 
 .Todo {
@@ -68,6 +86,17 @@ h1 {
     padding: 0.75rem 1rem;
     border-radius: 5px;
     margin-bottom: 1rem;
+}
+
+.Todo p {
+    flex-grow: 1;
+    margin: 0;
+    text-align: left;
+}
+
+.task-info{
+    display: flex;
+    flex-direction: column;
 }
 
 .todo-buttons {
@@ -93,4 +122,26 @@ h1 {
 
 .delete-icon {
     cursor: pointer;
+}
+
+.due-date {
+    font-size: 0.85rem;
+    color: #c5aeff;
+}
+
+.priority {
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+
+.priority.high {
+    color: red;
+}
+
+.priority.medium {
+    color: orange;
+}
+
+.priority.low {
+    color: green;
 }
