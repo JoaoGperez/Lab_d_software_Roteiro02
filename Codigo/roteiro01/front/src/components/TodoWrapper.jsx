@@ -1,56 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TodoForm } from './TodoForm';
 import { TodoList } from './TodoList';
-import { v4 as uuidv4 } from "uuid";
+import { getTodos, createTodo, updateTodo, deleteTodo } from '../api';
 import './TodoWrapper.css';
 
 export const TodoWrapper = () => {
+    const [todos, setTodos] = useState([]);
 
-    const [todos, setTodos] = useState([
-        { id: 1, description: 'Tarefa exemplo', completed: false, dueDate: '2024-07-01', priority: 'Medium' }
-    ]);
+    useEffect(() => {
+        fetchTodos();
+    }, []);
 
-    const addTodo = (description, dueDate, priority) => {
-        setTodos([
-            ...todos,
-            { id: uuidv4(), description, completed: false, dueDate: dueDate, priority: priority },
-        ]);
-    }
+    const fetchTodos = async () => {
+        const response = await getTodos();
+        setTodos(response.data);
+    };
 
-    const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
+    const addTodo = async (description, dueDate, priority) => {
+        const newTodo = {
+            description,
+            dueDate,
+            priority,
+            completed: false,
+        };
+        await createTodo(newTodo);
+        fetchTodos();
+    };
 
-    const toggleComplete = id => {
-        const newTodos = todos.map(todo => todo.id === id ? {
-            ...todo, completed:
-                !todo.completed
-        } : todo);
-        setTodos(newTodos);
-        localStorage.setItem('todos', JSON.stringify(newTodos));
-    }
+    const handleDeleteTodo = async (id) => {
+        await deleteTodo(id);
+        fetchTodos();
+    };
 
-    const editTodo = (id) => {
-        setTodos(
-            todos.map((todo) =>
-                todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
-            )
-        );
-    }
+    const handleToggleComplete = async (id) => {
+        const todo = todos.find((todo) => todo.id === id);
+        await updateTodo(id, { ...todo, completed: !todo.completed });
+        fetchTodos();
+    };
+
+    const handleEditTodo = async (id, updatedTodo) => {
+        await updateTodo(id, updatedTodo);
+        fetchTodos();
+    };
 
     return (
         <div className='TodoWrapper'>
             <h1>Lista de Tarefas</h1>
             <TodoForm addTodo={addTodo} />
-            {todos.map((item) =>
+            {todos.map((item) => (
                 <TodoList
                     key={item.id}
                     task={item}
-                    editTodo={editTodo}
-                    deleteTodo={deleteTodo}
-                    toggleComplete={toggleComplete}
-
+                    deleteTodo={handleDeleteTodo}
+                    editTodo={handleEditTodo}
+                    toggleComplete={handleToggleComplete}
                 />
-            )
-            }
+            ))}
         </div>
     );
-}
+};
