@@ -39,6 +39,7 @@ export const TodoWrapperService = () => {
         try {
             await deleteTodo(id);
             fetchTodos();
+            console.log("Tarefa deletada");
         } catch (error) {
             console.error("Error deleting todo:", error);
         }
