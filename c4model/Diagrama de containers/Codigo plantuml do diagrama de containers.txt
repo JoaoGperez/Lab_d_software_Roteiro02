@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+SHOW_PERSON_OUTLINE()
+
+title Diagrama de Containers para o Sistema To do List
+
+Person(user, Usuário, "Usuário do sistema to do list")
+
+System_Boundary(c1, "To do List") {
+    Container(frontend, "Frontend", "React", "Interface de usuário para anotar e visualizar tarefas")
+    Container(backend, "Backend", "Java, Spring Boot", "API e lógica de negócios para gestão de tarefas")
+    ContainerDb(database, "Banco de Dados", "SQL Database", "Armazena informações das tarefas")
+}
+
+Rel(user, frontend, "Anota e visualiza tarefas", "HTTPS")
+Rel(frontend, backend, "Envia requisições para criar e obter tarefas", "HTTPS")
+Rel(backend, database, "Executa operações de leitura e escrita", "JDBC")
+
+SHOW_LEGEND()
+@enduml

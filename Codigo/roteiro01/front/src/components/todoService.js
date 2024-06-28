@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/todos';
+// Endereço base da API
+const API_URL = 'http://localhost:8080/api/task';
 
 export const getTodos = () => {
     return axios.get(API_URL);
@@ -14,7 +15,10 @@ export const updateTodo = (id, todo) => {
     return axios.put(`${API_URL}/${id}`, todo);
 };
 
-export const deleteTodo = (id, todo) => {
-    return axios.delete(`${API_URL}/${id}`, todo);
+export const deleteTodo = (id) => {
+    return axios.delete(`${API_URL}/${id}`);
 };
 
+export const completeTodo = (id) => {
+    return axios.put(`${API_URL}/${id}/complete`);
+};

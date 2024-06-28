@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Diagrama de Componentes para o Sistema To do List
+
+Container_Boundary(frontend, "Frontend (React)") {
+    Component(ui, "User Interface", "React Components", "Interface de usuário para anotar e visualizar tarefas")
+    Component(apiClient, "API Client", "JavaScript/axios", "Cliente para consumir a API do backend")
+}
+
+Container_Boundary(backend, "Backend (Spring Boot)") {
+    Component(controller, "TaskController", "Spring REST Controller", "Gerencia as requisições de tarefas")
+    Component(service, "TaskService", "Spring Service", "Lógica de negócios para tarefas")
+    Component(repository, "TaskRepository", "Spring Repository", "Acesso ao banco de dados para tarefas")
+}
+
+Rel(ui, apiClient, "Faz chamadas para")
+Rel(apiClient, controller, "Faz chamadas para", "HTTPS")
+
+Rel(controller, service, "Chama")
+Rel(service, repository, "Chama")
+
+@enduml

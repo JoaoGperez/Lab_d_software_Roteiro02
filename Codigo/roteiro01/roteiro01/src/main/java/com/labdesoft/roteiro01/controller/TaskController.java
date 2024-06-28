@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping
+@RequestMapping("/task")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
 
     private final TaskService taskService;
+
     @Autowired
     TaskRepository taskRepository;
 
@@ -30,8 +32,8 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/task")
-    @Operation(summary = "Lista todas as tarefas da lists")
+    @GetMapping
+    @Operation(summary = "Lista todas as tarefas da lista")
     public ResponseEntity<Page<Task>> listAll(Pageable pageable) {
         try {
             Page<Task> tasksPage = taskService.listAll(pageable);
@@ -55,7 +57,8 @@ public class TaskController {
         }
     }
 
-    @DeleteMapping("/task/{taskId}")
+
+    @DeleteMapping("/{taskId}")
     @Operation(summary = "Deleta uma tarefa da lista pelo ID")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable Long taskId) {
         try {
@@ -66,7 +69,7 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/task/{taskId}")
+    @PutMapping("/{taskId}")
     @Operation(summary = "Atualiza uma tarefa da lista pelo ID")
     public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto) {
         try {
@@ -79,7 +82,7 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/task/{taskId}/complete")
+    @PutMapping("/{taskId}/complete")
     @Operation(summary = "Marca uma tarefa como concluída")
     public ResponseEntity<Task> completeTask(@PathVariable Long taskId) {
         try {
@@ -94,7 +97,7 @@ public class TaskController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{taskId}")
     @Operation(summary = "Recuperar tarefa pelo ID")
     public ResponseEntity<TaskDto> getTaskById(@PathVariable Long taskId) {
         try {
@@ -114,6 +117,4 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
-

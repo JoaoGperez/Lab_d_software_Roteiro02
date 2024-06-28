@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TodoForm } from './TodoForm';
 import { TodoList } from './TodoList';
-import { getTodos, createTodo, updateTodo, deleteTodo } from '../api';
+import { getTodos, createTodo, updateTodo, deleteTodo } from './todoService';
 import './TodoWrapper.css';
 
 export const TodoWrapper = () => {
@@ -12,8 +12,15 @@ export const TodoWrapper = () => {
     }, []);
 
     const fetchTodos = async () => {
-        const response = await getTodos();
-        setTodos(response.data);
+        try {
+            const response = await getTodos();
+            // Verifique se a resposta contém um objeto `content` e use-o
+            const todosData = response.data.content ? response.data.content : response.data;
+            setTodos(todosData);
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
+            setTodos([]);
+        }
     };
 
     const addTodo = async (description, dueDate, priority) => {
@@ -23,24 +30,40 @@ export const TodoWrapper = () => {
             priority,
             completed: false,
         };
-        await createTodo(newTodo);
-        fetchTodos();
+        try {
+            await createTodo(newTodo);
+            fetchTodos();
+        } catch (error) {
+            console.error('Error adding todo:', error);
+        }
     };
 
     const handleDeleteTodo = async (id) => {
-        await deleteTodo(id);
-        fetchTodos();
+        try {
+            await deleteTodo(id);
+            fetchTodos();
+        } catch (error) {
+            console.error('Error deleting todo:', error);
+        }
     };
 
     const handleToggleComplete = async (id) => {
         const todo = todos.find((todo) => todo.id === id);
-        await updateTodo(id, { ...todo, completed: !todo.completed });
-        fetchTodos();
+        try {
+            await updateTodo(id, { ...todo, completed: !todo.completed });
+            fetchTodos();
+        } catch (error) {
+            console.error('Error toggling complete:', error);
+        }
     };
 
     const handleEditTodo = async (id, updatedTodo) => {
-        await updateTodo(id, updatedTodo);
-        fetchTodos();
+        try {
+            await updateTodo(id, updatedTodo);
+            fetchTodos();
+        } catch (error) {
+            console.error('Error editing todo:', error);
+        }
     };
 
     return (

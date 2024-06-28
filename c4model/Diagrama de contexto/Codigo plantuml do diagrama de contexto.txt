@@ -1,0 +1,16 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Diagrama de Contexto para o Sistema de To do List
+
+Person(usuário, "Usuário", "Usuário do sistema To do List")
+
+System_Boundary(sistema, "Sistema To do List") {
+    System(backend, "Backend", "API para gestão de tarefas")
+    System(frontend, "Frontend", "Interface de usuário para anotar e visualizar tarefas")
+}
+
+Rel(usuário, frontend, "Anota e visualiza tarefas")
+Rel(frontend, backend, "Envio e obtenção de tarefas")
+
+@enduml
